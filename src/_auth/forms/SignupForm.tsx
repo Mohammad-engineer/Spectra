@@ -9,14 +9,17 @@ import Loader from "@/components/shared/Loader"
 import { Link } from "react-router-dom"
 import { createUserAccount } from "@/lib/appwrite/api"
 import { useToast } from "@/components/ui/use-toast"
-import { userCreateAccount} from "@/lib/react-query/queriesAndMutations"
+import { userCreateAccount, userSignInAccount} from "@/lib/react-query/queriesAndMutations"
 
 
 
 const SignupForm = () => {
 
   const { toast } = useToast()
+  
   const {mutateAsync: createUserAccount, isLoading: isCreatingUser} = userCreateAccount()
+
+  const {mutateAsync: signInAccount, isLoading: isSigninIn} = userSignInAccount()
 
     // 1. Define your form.
     const form = useForm<z.infer<typeof SignupValidation>>({
@@ -41,7 +44,13 @@ const SignupForm = () => {
           title:'Sign up failed. please try again'
         })
       }
-      const session = await signIn
+      const session = await signInAccount({email: values.email, password: values.password})
+
+      if(!session){
+        toast({title:'you have no account'})
+      }
+
+
       console.log({newUser});
     }
 
