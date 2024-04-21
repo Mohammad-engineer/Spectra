@@ -1,7 +1,6 @@
 import { getCurrentUser } from "@/lib/appwrite/api"
 import { IContextType, IUser } from "@/types"
-import { Import } from "lucide-react"
-import { createContext, useContext, useEffect, useState } from "react"
+import React, { createContext, useContext, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 export const INITIAL_USER = {
@@ -29,12 +28,11 @@ const AuthProvider = ({children}:{children: React.ReactNode}) => {
     const [user, setUser] = useState<IUser>(INITIAL_USER);
     const [isLoading, setIsLoading] = useState(false);
     const [isAuthenticated , setIsAuthenticated] = useState(false);
-
     const navigate = useNavigate();
 
     const checkAuthUser = async()=>{
+        setIsLoading(true);
         try {
-
             const currentAccount = await getCurrentUser()
             if(currentAccount){
                 setUser({
@@ -62,13 +60,16 @@ const AuthProvider = ({children}:{children: React.ReactNode}) => {
     }
 
     useEffect(()=>{
+        const cookieFallback = localStorage.getItem("cookieFallback");
+        // localStorage.getItem('cookiefaLLback') === null
         if(
-            localStorage.getItem('cookieFallback') === '[]' ||
-            localStorage.getItem('cookiefaLLback') === null
-        ){
-            navigate('/sign-in')
+            cookieFallback === "[]" ||
+            cookieFallback === null ||
+            cookieFallback === undefined
+            ){ navigate('/sign-in')}
+
             checkAuthUser()
-        }
+        
     },[])
 
     const value = {

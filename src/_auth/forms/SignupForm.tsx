@@ -6,20 +6,20 @@ import {Form,FormControl,FormField,FormItem,FormLabel,FormMessage,} from "@/comp
 import { Input } from "@/components/ui/input"
 import { z } from "zod"
 import Loader from "@/components/shared/Loader"
-import { Link } from "react-router-dom"
-import { createUserAccount } from "@/lib/appwrite/api"
+import { Link, useNavigate} from "react-router-dom"
 import { useToast } from "@/components/ui/use-toast"
 import { userCreateAccount, userSignInAccount} from "@/lib/react-query/queriesAndMutations"
-
-
+import { useUserContext } from "@/context/AuthContext"
 
 const SignupForm = () => {
 
   const { toast } = useToast()
+  const navigate = useNavigate()
+  const {checkAuthUser, isLoading: isUserLoading} = useUserContext()
   
-  const {mutateAsync: createUserAccount, isLoading: isCreatingUser} = userCreateAccount()
+  const {mutateAsync: createUserAccount, isPending: isCreatingAccount} = userCreateAccount()
 
-  const {mutateAsync: signInAccount, isLoading: isSigninIn} = userSignInAccount()
+  const {mutateAsync: signInAccount, isPending: isSigningInUser} = userSignInAccount()
 
     // 1. Define your form.
     const form = useForm<z.infer<typeof SignupValidation>>({
@@ -35,23 +35,28 @@ const SignupForm = () => {
     // 2. Define a submit handler.
     async function onSubmit(values: z.infer<typeof SignupValidation>) {
       //create User
-      // Do something with the form values.
-      // ✅ This will be type-safe and validated.
+  
       console.log(values)
       const newUser = await createUserAccount(values);
       if(!newUser){
         return toast({
-          title:'Sign up failed. please try again'
+          title:'Sign up failed. please try again',style:{background:'#050043'},duration:8000
         })
       }
       const session = await signInAccount({email: values.email, password: values.password})
 
       if(!session){
-        toast({title:'you have no account'})
+        toast({title:'you have no account',style:{background:'#050043'},duration:8000})
       }
 
-
-      console.log({newUser});
+      const isLoggedIn = await checkAuthUser()
+      if (isLoggedIn) {
+        form.reset()
+        navigate('/')
+        return toast({title:`welcome to spectra ${values.name}`,style:{background:'#050043'},duration:8000})
+      }else{
+        return toast({title:'log in failed, please try again',style:{background:'#050043'},duration:8000 })
+      }
     }
 
   return (
@@ -60,9 +65,6 @@ const SignupForm = () => {
         <img src="/assets/images/logo.svg" alt="logo" />
         <h2 className="h3-bold md:h2-bold pt-5 sm:pt-12">Create New Account</h2>
         <p className="text-light-3 small-medium md:base-regular mt-2">To use SnapGram, please enter your details</p>
-     
-
-
 
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex-col gap-5 w-full mt-4">
         <FormField
@@ -122,7 +124,7 @@ const SignupForm = () => {
           )}
         />
         <Button type="submit" className="w-full  shad-button_primary mt-7">
-          {isCreatingUser ?(
+          {isCreatingAccount  || isSigningInUser || isUserLoading ? (
             <div className="flex-center gap-2">
               <Loader /> Loading...
             </div>

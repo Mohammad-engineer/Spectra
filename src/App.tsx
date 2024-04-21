@@ -20,18 +20,13 @@ function App() {
           <Route path='/sign-up' element={<SignupForm />} />
         </Route>
 
-
-        
         {/* private Routes */}
         <Route element={<RootLayout />}>
           <Route index element={<Home />} />
-
         </Route>
       
       </Routes>
-
-      <Toaster />
-        
+      <Toaster />   
     </main>
   )
 }

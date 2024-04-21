@@ -7,3 +7,8 @@ export const SignupValidation = z.object({
     password: z.string().min(8,{message:'Too weak'})
   })
   
+  export const SigninValidation = z.object({
+    email: z.string().email(),
+    password: z.string().min(8,{message:'Too weak'})
+  })
+  
