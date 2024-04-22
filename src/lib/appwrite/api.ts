@@ -49,7 +49,12 @@ export async function saveUserToDB(user:{
 
 export async function signInAccount(user:{email: string; password: string}){
     try{
-        const session = await account.createEmailPasswordSession(user.email, user.password);
+
+        const currentAccount = await account.get()
+        sessionStorage.setItem('account',currentAccount.$id)
+        
+        const session = await account.createEmailSession(user.email, user.password);
+     
         return session;
          
     }catch(error){
@@ -63,8 +68,7 @@ export async function getCurrentUser() {
     try {
         
         const currentAccount = await account.get()
-        console.log({currentAccount})
-
+     
         if(!currentAccount) throw Error
 
         const currentUser = await databases.listDocuments(
@@ -73,7 +77,6 @@ export async function getCurrentUser() {
             [Query.equal("accountId", [currentAccount.$id])]
            )
 
-            console.log(currentUser)
 
             if(!currentUser) throw Error;
 
@@ -84,3 +87,13 @@ export async function getCurrentUser() {
     }
 }
 
+
+export async function signOutAccount() {
+    try {
+        const session = await account.deleteSession('current')
+        return session
+    } catch (error) {
+        console.log(error)
+    }
+    
+}
