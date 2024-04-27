@@ -1,7 +1,9 @@
 import PostForms from "@/components/forms/PostForms";
-import React from "react";
+import { useUserContext } from "@/context/AuthContext";
 
 const CreatePost = () => {
+  const {user} = useUserContext()
+  //console.log({user})
   return (
     <div className="flex flex-1">
       <div className="common-container">
@@ -14,7 +16,7 @@ const CreatePost = () => {
           />
           <h2 className="h3-bold md:h2-bold text-left w-full">Create Post</h2>
         </div>
-        <PostForms />
+        <PostForms user={user} />
       </div>
     </div>
   );

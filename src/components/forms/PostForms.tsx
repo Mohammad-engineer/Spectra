@@ -15,14 +15,16 @@ import { useCreatePost } from "@/lib/react-query/queriesAndMutations";
 
 
 type PostFormProps = {
-    post?: Models.Document 
+    post?: Models.Document ;
+    user: any
 }
 
-const PostForms = ({ post }: PostFormProps) => {
+const PostForms = ({ post ,user}: PostFormProps) => {
 
     const {mutateAsync: createPost, isPending: isLoadingCreate} = useCreatePost();
+    const { toast } = useToast()
+    const navigate = useNavigate()
     
-    console.log(isLoadingCreate)
   // 1. Define your form.
   const form = useForm<z.infer<typeof PostValidation>>({
     resolver: zodResolver(PostValidation),
@@ -36,10 +38,11 @@ const PostForms = ({ post }: PostFormProps) => {
 
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof PostValidation>) {
+    console.log({values})
+    //const { user } = useUserContext()
+    console.log({user})
 
-    const { user } = useUserContext()
-    const { toast } = useToast()
-    const navigate = useNavigate()
+  
 
     const newPost = await createPost({
         ...values,

@@ -23,7 +23,7 @@ const SigninForm = () => {
   const navigate = useNavigate();
   const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
 
-  const { mutateAsync: signInAccount, isPending } = userSignInAccount();
+  const { mutateAsync: signInAccount } = userSignInAccount();
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof SigninValidation>>({
@@ -50,7 +50,7 @@ const SigninForm = () => {
       });
     }
     const isLoggedIn = await checkAuthUser();
-
+    console.log({isLoggedIn})
     if (isLoggedIn) {
       // form.reset()
       navigate("/");

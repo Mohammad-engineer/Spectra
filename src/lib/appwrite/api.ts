@@ -1,6 +1,7 @@
 import { INewPost, INewUser } from "@/types";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
-import { ID, Query } from "appwrite";
+import { Account, Client, ID, Query } from "appwrite";
+
 
 export async function createUserAccount(user : INewUser) {
     console.log(user)
@@ -47,18 +48,14 @@ export async function saveUserToDB(user:{
     }catch(error){}
 }
 
-export async function signInAccount(user:{email: string; password: string}){
-    try{
-
-        const currentAccount = await account.get()
-        sessionStorage.setItem('account',currentAccount.$id)
-        
-        const session = await account.createEmailSession(user.email, user.password);
-     
-        return session;
-         
-    }catch(error){
-        console.log(error)
+// ============================== SIGN IN
+export async function signInAccount(user: { email: string; password: string }) {
+    try {
+      const session = await account.createEmailSession(user.email, user.password);
+  
+      return session;
+    } catch (error) {
+      console.log(error);
     }
 }
 
@@ -106,6 +103,7 @@ export async function signOutAccount() {
 // ============================== CREATE POST
 export async function createPost(post: INewPost) {
     try {
+        console.log({post})
       // Upload file to appwrite storage
       const uploadedFile = await uploadFile(post.file[0]);
   
@@ -164,7 +162,7 @@ export async function createPost(post: INewPost) {
     
   }
   
-  export async function getFilePreview(fileId: string) {
+  export function getFilePreview(fileId: string) {
     try {
         const fileUrl = storage.getFilePreview(
             appwriteConfig.storageId,
