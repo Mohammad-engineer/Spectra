@@ -25,9 +25,8 @@ const PostStats = ({ post, userId }: postStatsProps) => {
 
   const { data: currentUser } = useGetCurrentUser();
 
-  const savedPostRecord = currentUser?.save.find(
-    (record: Models.Document) => record.$id === post.$id
-  );
+const savedPostRecord = currentUser?.save.find(
+  (record: Models.Document) => record.post.$id === post.$id);
 
   useEffect(()=>{
     setIsSaved(!!savedPostRecord)
@@ -53,7 +52,6 @@ const PostStats = ({ post, userId }: postStatsProps) => {
 
   const handleSavePost = (e: React.MouseEvent) => {
     e.stopPropagation();
-
 
     if (savedPostRecord) {
      setIsSaved(false)

@@ -8,7 +8,6 @@ import FileUploader from "../shared/FileUploader";
 import { Textarea } from "../ui/textarea";
 import { PostValidation } from "@/lib/validation";
 import { Models } from "appwrite";
-import { useUserContext } from "@/context/AuthContext";
 import { useToast } from "../ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { useCreatePost } from "@/lib/react-query/queriesAndMutations";
@@ -16,11 +15,13 @@ import { useCreatePost } from "@/lib/react-query/queriesAndMutations";
 
 type PostFormProps = {
     post?: Models.Document ;
-    user: any
+    user?: any;
+    action: 'Create' | 'Update';
 }
 
-const PostForms = ({ post ,user}: PostFormProps) => {
+const PostForms = ({ post ,user , action}: PostFormProps) => {
 
+  console.log({post})
     const {mutateAsync: createPost, isPending: isLoadingCreate} = useCreatePost();
     const { toast } = useToast()
     const navigate = useNavigate()

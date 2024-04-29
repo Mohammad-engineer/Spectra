@@ -1,9 +1,17 @@
 import PostForms from "@/components/forms/PostForms";
-import { useUserContext } from "@/context/AuthContext";
+import Loader from "@/components/shared/Loader";
+import { useGetPostById } from "@/lib/react-query/queriesAndMutations";
+import { useParams } from "react-router-dom";
 
 const EditPost = () => {
-  const {user} = useUserContext()
-  //console.log({user})
+
+  const {id} = useParams()
+  const { data: post, isPending } = useGetPostById( id || '' )
+  console.log({id})
+  console.log(post)
+
+  if (isPending) return <Loader />
+
   return (
     <div className="flex flex-1">
       <div className="common-container">
@@ -16,6 +24,7 @@ const EditPost = () => {
           />
           <h2 className="h3-bold md:h2-bold text-left w-full">Edit Post</h2>
         </div>
+        <PostForms action='Update' post={post}  />
       </div>
     </div>
   );

@@ -250,3 +250,17 @@ export async function createPost(post: INewPost) {
         console.log(error)
     }
   }
+
+  export async function getPostById( postId : string) {
+    try {
+        const post = await databases.getDocument(
+            appwriteConfig.databasesId,
+            appwriteConfig.postCollectionId,
+            postId
+        )
+        console.log(post)
+        return post
+    } catch (error) {
+        console.log(error)
+    }
+  }
