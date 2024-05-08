@@ -1,19 +1,42 @@
 import GridPostList from "@/components/shared/GridPostList";
+import Loader from "@/components/shared/Loader";
 import SearchResult from "@/components/shared/SearchResult";
 import { Input } from "@/components/ui/input";
-import { useSearchPosts } from "@/lib/react-query/queriesAndMutations";
-import { useState } from "react";
+import useDebounce from "@/hooks/useDebounce";
+import { useGetPosts, useSearchPosts } from "@/lib/react-query/queriesAndMutations";
+import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
 const Explore = () => {
-  const [searchValue, setSearchValue] = useState("");
 
-  const {data: searchedPosts, isPending: isSearchFetching} = useSearchPosts(searchValue)
-  const posts = [];
+  const {data:posts, fetchNextPage, hasNextPage } = useGetPosts()
+
+  const [searchValue, setSearchValue] = useState("");
+  const debouncedValue = useDebounce(searchValue,500)
+  const {data: searchedPosts, isPending: isSearchFetching} = useSearchPosts(debouncedValue)
+
+
+  const { ref, inView } = useInView();
+  useEffect(()=>{
+
+    if (inView && !searchValue) fetchNextPage()
+
+  },[inView,searchValue])
+
+  console.log({searchedPosts})
+
+  if(!posts){
+    return(
+      <div className="flex-center w-full h-full">
+        <Loader />
+      </div>
+    )
+  }
 
   const shouldShowSreachResult = searchValue !== "";
   const shouldShowPosts =
     !shouldShowSreachResult &&
-    posts?.pages.every((item) => item.documents.lenght === 0);
+    posts?.pages.every((item) => item.documents.length === 0);
 
   return (
     <div className="explore-container">
@@ -50,7 +73,9 @@ const Explore = () => {
 
       <div className="flex flex-wrap gap-9 w-full max-w-5xl">
         {shouldShowSreachResult ? (
-          <SearchResult />
+          <SearchResult
+            isSearchFetching={isSearchFetching}
+            searchedPosts={searchedPosts} />
         ) : shouldShowPosts ? (
           <p className="text-light-4 mt-10 text-center w-full">End of Posts</p>
         ) : (
@@ -59,6 +84,12 @@ const Explore = () => {
           ))
         )}
       </div>
+        {hasNextPage && !searchValue && (
+          <div ref={ref} className="mt-10">
+            <Loader />
+          </div>
+        )}
+
     </div>
   );
 };
