@@ -149,6 +149,14 @@ export const useGetPostById = (postId: string)=>{
   })
 }
 
+export const useGetUserPosts = (userId?: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_USER_POSTS, userId],
+    queryFn: () => getUserPosts(userId),
+    enabled: !!userId,
+  });
+};
+
 export const useUpdatePost = ()=>{
   const queryClient = useQueryClient();
   return useMutation({

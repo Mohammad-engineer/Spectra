@@ -18,6 +18,9 @@ const Home = () => {
               ))}
             </ul>
           )}
+          {isPostError && (
+            <p className='text-light-4 mt-10 text-center w-full'>There is not post yet</p>
+          )}
         </div>
       </div>
     </div>
