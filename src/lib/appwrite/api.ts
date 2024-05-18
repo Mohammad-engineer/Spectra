@@ -58,7 +58,7 @@ export async function signInAccount(user: { email: string; password: string }) {
   }
 }
 
-// ============================== GET USER
+//============================== GET USER
 
 export async function getCurrentUser() {
   try {
@@ -247,7 +247,6 @@ export async function getPostById(postId: string) {
       appwriteConfig.postCollectionId,
       postId
     );
-    console.log(post);
     return post;
   } catch (error) {
     console.log(error);

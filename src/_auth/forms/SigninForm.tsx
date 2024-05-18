@@ -40,7 +40,6 @@ const SigninForm = () => {
       email: values.email,
       password: values.password,
     });
-    console.log({ session });
 
     if (!session) {
       toast({
@@ -50,7 +49,7 @@ const SigninForm = () => {
       });
     }
     const isLoggedIn = await checkAuthUser();
-    console.log({isLoggedIn})
+
     if (isLoggedIn) {
       // form.reset()
       navigate("/");
