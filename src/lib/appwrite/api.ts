@@ -1,6 +1,6 @@
 import { INewPost, INewUser, IUpdatePost } from "@/types";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
-import { Account, Client, ID, Query } from "appwrite";
+import { ID, Query } from "appwrite";
 
 export async function createUserAccount(user: INewUser) {
   console.log(user);
@@ -240,7 +240,8 @@ export async function deleteSavedPost(savedRecordId: string) {
   }
 }
 
-export async function getPostById(postId: string) {
+export async function getPostById(postId?: string) {
+  if (!postId) throw Error;
   try {
     const post = await databases.getDocument(
       appwriteConfig.databasesId,
@@ -321,7 +322,7 @@ export async function updatePost(post: IUpdatePost) {
   }
 }
 
-export async function deletePost(postId : string, imageId: string) {
+export async function deletePost(postId?: string, imageId?: string) {
     if(!postId || !imageId) throw Error;
 
     try {
@@ -336,9 +337,9 @@ export async function deletePost(postId : string, imageId: string) {
     }
 }
 
-export async function getInfinitePosts({pageParams} :{pageParams:number}) {
+export async function getInfinitePosts({pageParams} : {pageParams: number}) {
   
-  const queries: any[] = [Query.orderDesc('$updatedAt'),Query.limit(10)];
+  const queries: any[] = [Query.orderDesc('$updatedAt'), Query.limit(10)];
 
   if(pageParams){
     queries.push(Query.cursorAfter(pageParams.toString()))

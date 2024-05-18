@@ -4,7 +4,6 @@ import { Button } from '../ui/button'
 import { userSignOutAccount } from '@/lib/react-query/queriesAndMutations'
 import { useUserContext } from '@/context/AuthContext'
 
-
 const Topbar = () => {
 
     const {mutate:signOut, isSuccess } = userSignOutAccount()

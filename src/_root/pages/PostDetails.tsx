@@ -1,10 +1,8 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/shared/Loader";
 import PostStats from "@/components/shared/PostStats";
 import GridPostList from "@/components/shared/GridPostList";
-
 import {
   useGetPostById,
   useGetUserPosts,
@@ -25,7 +23,7 @@ const PostDetails = () => {
   const { mutate: deletePost } = useDeletePost();
 
   const relatedPosts = userPosts?.documents.filter(
-    (userPost) => userPost.$id !== id
+    (userPost:any) => userPost.$id !== id
   );
 
   const handleDeletePost = () => {

@@ -22,7 +22,7 @@ const EditPost = () => {
           />
           <h2 className="h3-bold md:h2-bold text-left w-full">Edit Post</h2>
         </div>
-        <PostForms action='Update' post={post}  />
+        <PostForms action='Update' post={post} />
       </div>
     </div>
   );
